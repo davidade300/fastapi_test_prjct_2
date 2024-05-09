@@ -21,7 +21,14 @@ class Book:
         self.rating = rating
 
 
-BOOKS = []
+BOOKS = [
+    Book(1, "Computer Science Pro", "codingwithroby", "A very nice book!", 5),
+    Book(2, "Be Fast with FastAPI", "codingwithroby", "A great book!", 5),
+    Book(3, "Master Endpoints", "codingwithroby", "A awesome book!", 5),
+    Book(4, "HP1", "Author 1", "Book Description", 2),
+    Book(5, "HP2", "Author 2", "Book Description", 3),
+    Book(6, "HP3", "Author 3", "Book Description", 1),
+]
 
 
 @app.get("/books")
