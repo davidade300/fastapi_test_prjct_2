@@ -1,6 +1,6 @@
-from os import path
-from unittest.mock import patch
+from typing import Optional
 from fastapi import FastAPI
+from pydantic import BaseModel, Field
 import uvicorn
 
 app = FastAPI(debug=True)
@@ -31,10 +31,35 @@ BOOKS = [
 ]
 
 
+class BookRequest(BaseModel):
+    # if an id is not passed in the body, it receives None value
+    id: Optional[int] = None
+    title: str = Field(min_length=3)
+    author: str = Field(min_length=1)
+    description: str = Field(min_length=1, max_length=100)
+    rating: int = Field(gt=-1, lt=6)
+
+
 @app.get("/books")
 async def read_all_books():
     return BOOKS
 
 
+@app.post("/create_book")
+async def create_book(book_request: BookRequest):
+    new_book = Book(**book_request.model_dump())
+    BOOKS.append(find_book_id(new_book))
+
+
+# find and assign a new id to a book
+def find_book_id(book: Book):
+    book.id = 1 if len(BOOKS) == 0 else BOOKS[-1].id + 1
+    # if len(BOOKS) > 0:
+    #     book.id = BOOKS[-1].id + 1
+    # else:
+    #     book.id = 1
+    return book
+
+
 if __name__ == "__main__":
-    uvicorn.run("main:app")
+    uvicorn.run("main:app", reload=True)
