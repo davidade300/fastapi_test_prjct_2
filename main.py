@@ -21,6 +21,30 @@ class Book:
         self.rating = rating
 
 
+class BookRequest(BaseModel):
+    # if an id is not passed in the body, it receives None value
+    # id: Optional[int] = None  # -> suficiente para ser opcional
+    id: Optional[int] = Field(
+        default=None,
+        title="this is not needed",
+        description="id is not needed(description)",
+    )
+    title: str = Field(min_length=3)
+    author: str = Field(min_length=1)
+    description: str = Field(min_length=1, max_length=100)
+    rating: int = Field(gt=-1, lt=6)
+
+    class Config:  # pydantic class
+        json_schema_extra = {
+            "example": {
+                "title": "A new book",
+                "author": "Codingwithroby",
+                "description": "A new description of a book",
+                "rating": 5,
+            }
+        }
+
+
 BOOKS = [
     Book(1, "Computer Science Pro", "codingwithroby", "A very nice book!", 5),
     Book(2, "Be Fast with FastAPI", "codingwithroby", "A great book!", 5),
@@ -29,15 +53,6 @@ BOOKS = [
     Book(5, "HP2", "Author 2", "Book Description", 3),
     Book(6, "HP3", "Author 3", "Book Description", 1),
 ]
-
-
-class BookRequest(BaseModel):
-    # if an id is not passed in the body, it receives None value
-    id: Optional[int] = None
-    title: str = Field(min_length=3)
-    author: str = Field(min_length=1)
-    description: str = Field(min_length=1, max_length=100)
-    rating: int = Field(gt=-1, lt=6)
 
 
 @app.get("/books")
