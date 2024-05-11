@@ -99,5 +99,13 @@ async def update_book(book: BookRequest):
             BOOKS[i] = book  # type: ignore
 
 
+@app.delete("/books/{book.id}")
+async def delete_book(book_id: int):
+    for i in range(len(BOOKS)):
+        if BOOKS[i].id == book_id:
+            BOOKS.pop(i)
+            break
+
+
 if __name__ == "__main__":
     uvicorn.run("main:app", reload=True)
